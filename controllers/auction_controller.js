@@ -2,7 +2,7 @@ const Auction = require("../model/AuctionSchema");
 
 const getAllAuctions = async (req, res, next) => {
   try {
-    const auctions = await Auction.find({ approved: true })
+    const auctions = await Auction.find()
       .populate("productId")
       .populate("sellerId");
     res.json(auctions);
@@ -26,8 +26,8 @@ const create = async (req, res, next) => {
     startTime: req.body.startTime,
     endTime: req.body.endTime,
     minimumBids: req.body.minimumBids,
-    // productId: req.body.productId,
-    productId: "63bdaceb9b9f5ef9a5f46c59",
+    productId: req.body.productId,
+    // productId: "63bdaceb9b9f5ef9a5f46c59",
     sellerId: req.user.id,
   };
   try {
@@ -39,29 +39,24 @@ const create = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
+  console.log("here1");
   const id = req.params.id;
   if (!id) {
     return next({ status: 404, message: "ID Is Missing" });
   }
 
   try {
-    const product = await Product.findByIdAndUpdate(
+    const auction = await Auction.findByIdAndUpdate(
       id,
       {
         $set: {
-          price: req.body.price,
-          title: req.body.title,
-          imgUrl: req.body.imgUrl,
-          stock: req.body.stock,
-          description: req.body.description,
-          category: req.body.category,
-          discount: req.body.discount,
+          approved: req.body.approved,
         },
       },
       { new: true }
     );
 
-    res.status(201).json({ product, message: "Products Record Updated" });
+    res.status(201).json({ auction, message: "Auction Record Updated" });
   } catch (error) {
     next({ status: 500, message: error.message });
   }

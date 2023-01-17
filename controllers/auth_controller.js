@@ -1,10 +1,11 @@
 const Seller = require("../model/SellerSchema");
 const Buyer = require("../model/BuyerSchema");
+const Admin = require("../model/AdminSchema");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const registerSeller = async (req, res, next) => {
-  console.log(req.body)
+  console.log(req.body);
   const { name, email, password } = req.body;
 
   let emailExists = await Seller.findOne({ email });
@@ -107,6 +108,22 @@ const loginBuyer = async (req, res, next) => {
   }
 };
 
+const registerAdmin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  let emailExists = await Admin.findOne({ email });
+
+  if (emailExists) {
+    return res.status(400).send("Email already Exists.");
+  }
+  const encPassword = bcryptjs.hashSync(password, 15);
+  try {
+    const user = await Admin.create({ email, password: encPassword });
+    res.status(201).json({ user, message: "Admin Registered Successfully" });
+  } catch (error) {
+    next({ status: 500, message: error.message });
+  }
+};
 const loginAdmin = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -146,5 +163,6 @@ module.exports = {
   loginSeller,
   registerBuyer,
   loginBuyer,
+  registerAdmin,
   loginAdmin,
 };

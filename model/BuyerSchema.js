@@ -1,4 +1,3 @@
-const { number, object } = require("joi");
 const mongoose = require("mongoose");
 
 const buyerSchema = new mongoose.Schema({

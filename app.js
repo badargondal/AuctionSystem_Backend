@@ -16,6 +16,7 @@ const productRoutes = require("./routes/productRoutes");
 const auctionRoutes = require("./routes/auctionRoutes");
 const sellerRoutes = require("./routes/sellerRoutes");
 const buyerRoutes = require("./routes/buyerRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 require("dotenv").config();
 
@@ -35,6 +36,7 @@ mongoose
   .catch((err) => console.log(err, "DB Connection Failed"));
 
 app.use(authRoutes);
+app.use("/admin", authMiddleWare, adminRoutes);
 app.use("/seller", authMiddleWare, sellerRoutes);
 app.use("/buyer", authMiddleWare, buyerRoutes);
 app.use("/auctions", auctionRoutes);
