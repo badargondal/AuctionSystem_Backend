@@ -37,7 +37,7 @@ mongoose
 
 app.use(authRoutes);
 app.use("/admin", authMiddleWare, adminRoutes);
-app.use("/seller", authMiddleWare, sellerRoutes);
+app.use("/seller", sellerRoutes);
 app.use("/buyer", authMiddleWare, buyerRoutes);
 app.use("/auctions", auctionRoutes);
 app.use("/products", productRoutes);

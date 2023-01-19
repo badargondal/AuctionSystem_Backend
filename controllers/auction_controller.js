@@ -39,7 +39,6 @@ const create = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
-  console.log("here1");
   const id = req.params.id;
   if (!id) {
     return next({ status: 404, message: "ID Is Missing" });
