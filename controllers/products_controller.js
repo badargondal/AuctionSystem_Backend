@@ -1,5 +1,6 @@
 const Auction = require("../model/AuctionSchema");
 const Product = require("../model/ProductSchema");
+const Bid = require("../model/BidSchema");
 
 const getAllProducts = async (req, res, next) => {
   try {
@@ -72,10 +73,11 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
   const id = req.params.id;
-  console.log("id", id);
+
   try {
     const product = await Product.findByIdAndDelete(id);
     const auctiondelete = await Auction.deleteMany({ productId: id });
+    const biddelete = await Bid.deleteMany({ productId: id });
     res.json({ message: "Product Deleted Successfully" });
   } catch (error) {
     next({ status: 500, message: error.message });

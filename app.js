@@ -21,6 +21,7 @@ const adminRoutes = require("./routes/adminRoutes");
 require("dotenv").config();
 
 // Getting Variables from .env
+
 const PORT = process.env.PORT;
 const DB_CONNECTION_STRING = process.env.DB_CONNECTION_STRING;
 
@@ -38,7 +39,7 @@ mongoose
 app.use(authRoutes);
 app.use("/admin", authMiddleWare, adminRoutes);
 app.use("/seller", sellerRoutes);
-app.use("/buyer", authMiddleWare, buyerRoutes);
+app.use("/buyer", buyerRoutes);
 app.use("/auctions", auctionRoutes);
 app.use("/products", productRoutes);
 

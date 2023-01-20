@@ -9,9 +9,9 @@ const router = express.Router();
 // Product Routes
 //seller
 router.get("/all", adminController.getAllSeller);
-router.get("/:id", adminController.getSeller);
 router.get("/products", authMiddleWare, sellerController.myProducts);
 router.post("/product", authMiddleWare, productsController.create);
+router.get("/:id", adminController.getSeller);
 // router.put("/product/:id", productsController.update);
 // router.delete("/product/:productID?", productsController.destroy);
 
