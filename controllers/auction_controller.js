@@ -5,6 +5,7 @@ const getAllAuctions = async (req, res, next) => {
     const auctions = await Auction.find()
       .populate("productId")
       .populate("sellerId");
+    console.log("Auctions", auctions);
     res.json(auctions);
   } catch (error) {
     next({ status: 404, message: error.message });
@@ -27,7 +28,6 @@ const create = async (req, res, next) => {
     endTime: req.body.endTime,
     minimumBids: req.body.minimumBids,
     productId: req.body.productId,
-    // productId: "63bdaceb9b9f5ef9a5f46c59",
     sellerId: req.user.id,
   };
   try {

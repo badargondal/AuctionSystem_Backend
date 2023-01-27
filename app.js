@@ -18,6 +18,7 @@ const sellerRoutes = require("./routes/sellerRoutes");
 const buyerRoutes = require("./routes/buyerRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
+
 require("dotenv").config();
 
 // Getting Variables from .env
@@ -35,6 +36,9 @@ mongoose
     );
   })
   .catch((err) => console.log(err, "DB Connection Failed"));
+
+
+const job = require("./jobs/schedular");
 
 app.use(authRoutes);
 app.use("/admin", authMiddleWare, adminRoutes);

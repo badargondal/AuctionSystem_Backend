@@ -2,9 +2,7 @@ const Bid = require("../model/BidSchema");
 
 const getAllBids = async (req, res, next) => {
   try {
-    const bids = await Bid.find({ approved: true })
-      .populate("productId")
-      .populate("buyerId");
+    const bids = await Bid.find({}).populate("productId").populate("buyerId");
     res.json(bids);
   } catch (error) {
     next({ status: 404, message: error.message });
