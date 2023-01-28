@@ -8,6 +8,35 @@ const getAllBids = async (req, res, next) => {
     next({ status: 404, message: error.message });
   }
 };
+async function prod(item) {
+  const productss = await Bid.find({ productId: item })
+    .sort({ bidAmount: -1 })
+    .limit(1)
+    .populate("productId")
+    .populate("buyerId");
+  return productss;
+}
+
+async function bid_data(unique_products) {
+  const new_list = [];
+  for (let i = 0; i < unique_products.length; i++) {
+    var current_product = await prod(unique_products[i]);
+    new_list.push(current_product[0]);
+  }
+  return new_list;
+}
+const getBidsReport = async (req, res, next) => {
+  try {
+    const bids = await Bid.find({}).populate("productId").populate("buyerId");
+    let products = bids?.map((i) => i.productId);
+    products = [...new Set(products?.map((item) => item._id))];
+    const bid_records = await bid_data(products);
+    res.json(bid_records);
+  } catch (error) {
+    next({ status: 404, message: error.message });
+  }
+};
+
 const getBid = async (req, res, next) => {
   try {
     const bid = await Bid.findById(req.params.id).populate("buyerId");
@@ -33,34 +62,7 @@ const create = async (req, res, next) => {
   }
 };
 
-const update = async (req, res, next) => {
-  const id = req.params.id;
-  if (!id) {
-    return next({ status: 404, message: "ID Is Missing" });
-  }
 
-  try {
-    const product = await Product.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          price: req.body.price,
-          title: req.body.title,
-          imgUrl: req.body.imgUrl,
-          stock: req.body.stock,
-          description: req.body.description,
-          category: req.body.category,
-          discount: req.body.discount,
-        },
-      },
-      { new: true }
-    );
-
-    res.status(201).json({ product, message: "Products Record Updated" });
-  } catch (error) {
-    next({ status: 500, message: error.message });
-  }
-};
 
 const destroy = async (req, res, next) => {
   const id = req.params.productID;
@@ -76,6 +78,6 @@ module.exports = {
   getAllBids,
   create,
   destroy,
-  update,
   getBid,
+  getBidsReport,
 };

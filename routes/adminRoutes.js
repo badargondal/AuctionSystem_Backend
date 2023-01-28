@@ -8,7 +8,8 @@ const bidController = require("../controllers/bid_controller");
 
 const router = express.Router();
 //admin
-router.get("/bids", bidController.getAllBids);
+router.get("/bids", bidController.getBidsReport);
+router.get("/bids/all", bidController.getAllBids);
 router.put("/auction/:id", auctionController.update);
 
 router.delete("/products/:id", productController.destroy);
