@@ -19,6 +19,31 @@ const getAuction = async (req, res, next) => {
   }
 };
 
+const getMyAuctions = async (req, res, next) => {
+  try {
+    const auction = await Auction.find({ sellerId: req.user.id })
+      .populate("sellerId")
+      .populate("productId")
+      .populate({
+        path: "bids",
+        populate: {
+          path: "buyerId",
+          model: "Buyer",
+        },
+      })
+      .populate({
+        path: "bids",
+        populate: {
+          path: "productId",
+          model: "Product",
+        },
+      });
+    res.json(auction);
+  } catch (error) {
+    next({ status: 404, message: error.message });
+  }
+};
+
 const create = async (req, res, next) => {
   let auction;
 
@@ -60,11 +85,75 @@ const update = async (req, res, next) => {
   }
 };
 
-const destroy = async (req, res, next) => {
-  const id = req.params.productID;
+async function findWinner(auctions) {
+  const bidData = [];
+  const winner = await auctions.forEach((item) => {
+    if (item.bids.length > 0) {
+      const arr = item.bids;
+      const BidWinner = arr.sort(
+        (a, b) => Number(b.bidAmount) - Number(a.bidAmount)
+      );
+
+      item.bids = BidWinner;
+      bidData.push(item);
+    }
+  });
+
+  return bidData;
+}
+
+const getBidsReport = async (req, res, next) => {
   try {
-    const blog = await Product.findByIdAndDelete(id);
-    res.json({ message: "Product Deleted" });
+    const auctions = await Auction.find()
+      .populate("productId")
+      .populate("sellerId")
+      .populate({
+        path: "bids",
+        populate: {
+          path: "buyerId",
+          model: "Buyer",
+        },
+      })
+      .populate({
+        path: "bids",
+        populate: {
+          path: "productId",
+          model: "Product",
+        },
+      });
+
+    const value = await findWinner(auctions);
+    res.json(value);
+  } catch (error) {
+    next({ status: 404, message: error.message });
+  }
+};
+
+const addBid = async (req, res, next) => {
+  const bid = {
+    bidAmount: req.body.bidAmount,
+    buyerId: req.user.id,
+    productId: req.body.productId,
+  };
+  const id = req.params.id;
+
+  if (!id) {
+    return next({ status: 404, message: "ID Is Missing" });
+  }
+  try {
+    const auction = await Auction.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          bids: {
+            $each: [bid],
+            $position: 0,
+          },
+        },
+      },
+      { new: true }
+    );
+    res.status(201).json({ auction, message: "Bid Added Successfuly" });
   } catch (error) {
     next({ status: 500, message: error.message });
   }
@@ -73,7 +162,9 @@ const destroy = async (req, res, next) => {
 module.exports = {
   getAllAuctions,
   create,
-  destroy,
   update,
   getAuction,
+  addBid,
+  getBidsReport,
+  getMyAuctions,
 };

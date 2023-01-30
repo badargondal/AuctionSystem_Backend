@@ -1,5 +1,25 @@
 const mongoose = require("mongoose");
 
+const bid = mongoose.Schema(
+  {
+    bidAmount: {
+      type: Number,
+      required: true,
+    },
+    buyerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Buyer",
+      required: true,
+    },
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
 const auctionSchema = new mongoose.Schema(
   {
     startTime: {
@@ -27,6 +47,7 @@ const auctionSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    bids: [bid],
   },
   { timestamps: true }
 );

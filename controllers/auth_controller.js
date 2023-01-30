@@ -5,7 +5,6 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const registerSeller = async (req, res, next) => {
-  console.log(req.body);
   const { name, email, password } = req.body;
 
   let emailExists = await Seller.findOne({ email });

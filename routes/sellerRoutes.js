@@ -16,6 +16,7 @@ router.get("/:id", adminController.getSeller);
 // router.delete("/product/:productID?", productsController.destroy);
 
 //auction
+router.get("/auctions/all", authMiddleWare, auctionController.getMyAuctions);
 router.post("/auction/create", authMiddleWare, auctionController.create);
 
 module.exports = router;

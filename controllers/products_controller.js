@@ -1,7 +1,5 @@
 const Auction = require("../model/AuctionSchema");
 const Product = require("../model/ProductSchema");
-const Bid = require("../model/BidSchema");
-
 const getAllProducts = async (req, res, next) => {
   try {
     const products = await Product.find({}).populate("sellerId");
@@ -25,13 +23,9 @@ const create = async (req, res, next) => {
   const data = {
     price: req.body.price,
     title: req.body.title,
-    // imgUrl: req.body.imgUrl,
-    imgUrl:
-      "https://thumbs.dreamstime.com/z/wooden-chair-isolated-11718982.jpg",
+    imgUrl: req.body.imgUrl,
     description: req.body.description,
-    // imgGroup: req.body.imgUrl,
-    imgGroup:
-      "https://thumbs.dreamstime.com/z/wooden-chair-isolated-11718982.jpg",
+    imgGroup: req.body.imgUrl,
     sellerId: req.user.id,
   };
   try {
@@ -77,7 +71,6 @@ const destroy = async (req, res, next) => {
   try {
     const product = await Product.findByIdAndDelete(id);
     const auctiondelete = await Auction.deleteMany({ productId: id });
-    const biddelete = await Bid.deleteMany({ productId: id });
     res.json({ message: "Product Deleted Successfully" });
   } catch (error) {
     next({ status: 500, message: error.message });
