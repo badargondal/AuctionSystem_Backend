@@ -1,4 +1,5 @@
 var cron = require("node-cron");
+const Mail = require("../mail/mail.js");
 const Auction = require("../model/AuctionSchema");
 const currentTimeAndDate = new Date();
 
@@ -20,6 +21,7 @@ async function Auctions() {
   return auctions;
 }
 const updateAuction = async (ItemId) => {
+  Mail;
   const id = ItemId;
   if (!id) {
     console.log("Id is Missing", id);
